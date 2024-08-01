@@ -7,7 +7,7 @@ loginForm.addEventListener('submit', (event) => {
 
   const users = [
     { username: 'testuser1', password: 'password1' },
-    { username: 'testuser2', password: 'password2' },
+    { username: 'BeckyMaynard', password: 'skeeter3' },
  //copy and paste above line to add users
   ];
 
