@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Becky Maynard Customer Portal</title>
+  <link rel="stylesheet" href="bowwow.css">
+</head>
+<body>
+  <div class="content-container">
+    <h1>Welcome, <span id="username"></span>!</h1>
+    <div class="payment-box">
+      <p class="payment-label">Upcoming Payment:</p>
+      <p class="payment-amount"><span id="paymentAmount"></span></p>
+      <p class="payment-due-date">Due on N/A</p>
+      <p class="autopay-info">This site uses autopay for your convenience.<br>if you have made a payment it may not update imediatally<br>for any questions please contact <br>(385)-985-7062 </p>
+      <div class="payment-options">
+        <a href="https://square.link/u/QjPxDTJE" class="payment-option">
+          <h3>weeding</h3>
+          <p>$170.00</p>
+        </a>
+        <a href="https://square.link/u/6pYr5qOe" class="payment-option">
+          <h3>edging</h3>
+          <p>$40.00</p>
+        </a>
+      </div>
+    </div>
+    <button id="setupAutoPay">no autopay? click here to Set Up Auto Pay</button>
+  </div>
+  <script>
+    const usernameSpan = document.getElementById('username');
+    const paymentAmountSpan = document.getElementById('paymentAmount');
+    const username = document.URL.split('/').pop().split('.')[0]; // Extract username from URL
+    const upcomingPayment = "N/A"; // Set upcoming payment amount
+
+
+    usernameSpan.textContent = username;
+    paymentAmountSpan.textContent = upcomingPayment;
+
+
+    const autoPayButton = document.getElementById('setupAutoPay');
+    autoPayButton.addEventListener('click', () => {
+      // Replace 'https://www.example.com/auto_pay.html' with your actual auto-pay setup link
+      window.location.href = 'https://checkout.square.site/merchant/6XJ9J44DFMNDM/checkout/7ONN67QPBSNPXS6TCVRMSVPU';
+    });
+ // Your existing JavaScript code for username extraction and payment amount
+  </script>
+</body>
+</html>

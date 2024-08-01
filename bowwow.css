@@ -1,0 +1,88 @@
+body {
+    font-family: sans-serif;
+    margin: 0; /* Remove default margin for full-width centering */
+    background-color: #f5f5f5; /* Light gray background */
+  }
+  
+  .content-container {
+    display: flex; /* Use flexbox for centering */
+    flex-direction: column; /* Stack elements vertically */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    min-height: 100vh; /* Set minimum height for full viewport */
+  }
+  
+  .welcome-message {
+    font-size: 1.5em; /* Increased font size for emphasis */
+    margin-bottom: 20px;
+    text-align: center; /* Center the welcome message */
+  }
+  
+  .welcome-message span { /* Style the username within the welcome message */
+    font-weight: bold;
+  }
+  
+  .payment-box {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 10px 0; /* Add some vertical spacing around the box */
+    max-width: 300px; /* Set a maximum width for responsiveness */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add slight shadow for depth */
+    text-align: center; /* Center text elements within the box (optional) */
+  }
+  
+  .payment-label,
+  .payment-due-date {
+    font-size: 1.5em;
+  }
+  .autopay-info {
+    font-size: 0.9em; /* Adjusted font size for better fit */
+    margin: 5px 0; /* Add some vertical spacing between elements */
+  }
+  
+  .payment-amount { /* Style the payment amount */
+    font-size: 1.9em; /* Increased font size for emphasis */
+    font-weight: bold; /* Make the amount bolder */
+    color: #3498db; /* Blue color for the payment amount */
+    margin: 0; /* Remove default margin for better spacing */
+  }
+  
+  #setupAutoPay { /* Style the button */
+    background-color: #3498db; /* Blue color to match payment amount */
+    color: #fff; /* White text for contrast */
+    padding: 10px 20px; /* Add some padding for better click area */
+    border: none;
+    border-radius: 3px; /* Rounded corners */
+    cursor: pointer; /* Indicate clickable element */
+    display: block; /* Make the button fill the full width */
+    margin: 10px 0; /* Add some vertical spacing above the button */
+  }
+  
+  #setupAutoPay:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+  }
+
+
+ .payment-options {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+ }
+
+ .payment-option {
+   border: 1px solid #ccc;
+   padding: 10px;
+   border-radius: 5px;
+   text-align: center;
+   text-decoration: none; /* Remove underline from anchor */
+   color: inherit; /* Inherit text color from parent */
+ }
+
+ .payment-option h3 {
+   margin: 0;
+ }
+
+ .payment-option p {
+   margin: 5px 0;
+ }
