@@ -1,7 +1,7 @@
 // Google Sheets API client configuration
-const API_KEY = 'AIzaSyAP50YCu9tHfShHdE_BPfHL2Q0m3_bLcHI'; // You'll need to get this from Google Cloud Console
-const CLIENT_ID = '661685921875-ggjhqkpohipue560nnhhia4711d4aptf.apps.googleusercontent.com'; // You'll need to get this from Google Cloud Console
-const SPREADSHEET_ID = '1P5liJkxzNqVBbrsaMdxT1MZ7Lk3j3ICL5J_M_mDdrVU'; // Get this from your Google Sheet URL
+const API_KEY = 'AIzaSyAP50YCu9tHfShHdE_BPfHL2Q0m3_bLcHI'; 
+const CLIENT_ID = '661685921875-ggjhqkpohipue560nnhhia4711d4aptf.apps.googleusercontent.com';
+const SPREADSHEET_ID = '1P5liJkxzNqVBbrsaMdxT1MZ7Lk3j3ICL5J_M_mDdrVU';
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
 // Sheet names/IDs for different data tables
@@ -23,6 +23,8 @@ function initClient() {
     updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
     
     // Bind buttons for authentication
+    document.getElementById('authorize_button').style.display = 'block';
+    document.getElementById('signout_button').style.display = 'none';
     document.getElementById('authorize_button').onclick = handleAuthClick;
     document.getElementById('signout_button').onclick = handleSignoutClick;
   }).catch(error => {
@@ -36,11 +38,24 @@ function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
     document.getElementById('authorize_button').style.display = 'none';
     document.getElementById('signout_button').style.display = 'block';
-    loadUserData();
+    document.getElementById('app').style.display = 'block';
+    
+    // Check if user is logged in
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    if (currentUser) {
+      document.getElementById('userInfo').innerHTML = `<p>Welcome, ${currentUser.username}!</p>`;
+      showTab('dashboard');
+      loadUserCharges();
+    } else {
+      showTab('login');
+    }
   } else {
     document.getElementById('authorize_button').style.display = 'block';
     document.getElementById('signout_button').style.display = 'none';
-    document.getElementById('content').innerText = 'Please authorize to access your data.';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('content').innerText = 'Please authorize to access the application.';
+    // Clear user session on sign out
+    sessionStorage.removeItem('currentUser');
   }
 }
 
@@ -64,23 +79,38 @@ function createAccount(username, email, password) {
   // Hash the password (in a real application, use a stronger method)
   const hashedPassword = hashPassword(password);
   
-  // Prepare the user data
-  const userData = [
-    [username, email, hashedPassword, new Date().toISOString()]
-  ];
-  
-  // Append to the Users sheet
-  gapi.client.sheets.spreadsheets.values.append({
+  // Check if user already exists
+  gapi.client.sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: USERS_SHEET,
-    valueInputOption: 'RAW',
-    insertDataOption: 'INSERT_ROWS',
-    resource: {
-      values: userData
+    range: USERS_SHEET
+  }).then(response => {
+    const users = response.result.values || [];
+    const existingUser = users.find(user => user[1] === email);
+    
+    if (existingUser) {
+      document.getElementById('content').innerText = 'An account with this email already exists.';
+      return;
     }
+    
+    // Prepare the user data
+    const userData = [
+      [username, email, hashedPassword, new Date().toISOString()]
+    ];
+    
+    // Append to the Users sheet
+    return gapi.client.sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: USERS_SHEET,
+      valueInputOption: 'RAW',
+      insertDataOption: 'INSERT_ROWS',
+      resource: {
+        values: userData
+      }
+    });
   }).then(response => {
     console.log('User created:', response);
-    document.getElementById('content').innerText = 'Account created successfully!';
+    document.getElementById('content').innerText = 'Account created successfully! You can now log in.';
+    showTab('login');
   }).catch(error => {
     console.error('Error creating user:', error);
     document.getElementById('content').innerText = 'Error creating account: ' + error.message;
@@ -105,8 +135,11 @@ function loginUser(email, password) {
   }).then(response => {
     const users = response.result.values || [];
     
+    // Skip header row if it exists
+    const startIndex = users[0][0] === 'Username' ? 1 : 0;
+    
     // Find user with matching email and password
-    const user = users.find(user => user[1] === email && user[2] === hashedPassword);
+    const user = users.slice(startIndex).find(user => user[1] === email && user[2] === hashedPassword);
     
     if (user) {
       // Set user session
@@ -116,7 +149,9 @@ function loginUser(email, password) {
         createdAt: user[3]
       }));
       
+      document.getElementById('userInfo').innerHTML = `<p>Welcome, ${user[0]}!</p>`;
       document.getElementById('content').innerText = 'Logged in successfully!';
+      showTab('dashboard');
       loadUserCharges();
     } else {
       document.getElementById('content').innerText = 'Invalid email or password.';
@@ -140,7 +175,12 @@ function loadUserCharges() {
     spreadsheetId: SPREADSHEET_ID,
     range: UNPAID_CHARGES_SHEET
   }).then(response => {
-    const charges = response.result.values || [];
+    const allCharges = response.result.values || [];
+    
+    // Skip header row if present
+    const startIndex = allCharges[0] && allCharges[0][0] === 'UserEmail' ? 1 : 0;
+    const charges = allCharges.slice(startIndex);
+    
     const userCharges = charges.filter(charge => charge[0] === currentUser.email);
     
     // Display charges
@@ -153,14 +193,47 @@ function loadUserCharges() {
         chargesHTML += `<tr>
           <td>${charge[1]}</td>
           <td>$${charge[2]}</td>
-          <td>${charge[3]}</td>
+          <td>${new Date(charge[3]).toLocaleDateString()}</td>
           <td><button onclick="processPayment(${index})">Pay Now</button></td>
         </tr>`;
       });
       chargesHTML += '</table>';
     }
     
-    document.getElementById('content').innerHTML = chargesHTML;
+    // Also show paid charges
+    gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: PAID_CHARGES_SHEET
+    }).then(paidResponse => {
+      const allPaidCharges = paidResponse.result.values || [];
+      
+      // Skip header row if present
+      const paidStartIndex = allPaidCharges[0] && allPaidCharges[0][0] === 'UserEmail' ? 1 : 0;
+      const paidCharges = allPaidCharges.slice(paidStartIndex);
+      
+      const userPaidCharges = paidCharges.filter(charge => charge[0] === currentUser.email);
+      
+      chargesHTML += '<h2>Your Payment History</h2>';
+      if (userPaidCharges.length === 0) {
+        chargesHTML += '<p>No payment history found.</p>';
+      } else {
+        chargesHTML += '<table><tr><th>Description</th><th>Amount</th><th>Date</th><th>Paid On</th></tr>';
+        userPaidCharges.forEach(charge => {
+          chargesHTML += `<tr>
+            <td>${charge[1]}</td>
+            <td>$${charge[2]}</td>
+            <td>${new Date(charge[3]).toLocaleDateString()}</td>
+            <td>${new Date(charge[4]).toLocaleDateString()}</td>
+          </tr>`;
+        });
+        chargesHTML += '</table>';
+      }
+      
+      document.getElementById('charges').innerHTML = chargesHTML;
+    }).catch(error => {
+      console.error('Error loading paid charges:', error);
+      document.getElementById('charges').innerHTML = chargesHTML + '<p>Error loading payment history.</p>';
+    });
   }).catch(error => {
     console.error('Error loading charges:', error);
     document.getElementById('content').innerText = 'Error loading charges: ' + error.message;
@@ -175,12 +248,20 @@ function processPayment(chargeIndex) {
     return;
   }
   
+  // Show processing message
+  document.getElementById('content').innerText = 'Processing payment...';
+  
   // 1. Get all unpaid charges
   gapi.client.sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
     range: UNPAID_CHARGES_SHEET
   }).then(response => {
-    const charges = response.result.values || [];
+    const allCharges = response.result.values || [];
+    
+    // Skip header row if present
+    const startIndex = allCharges[0] && allCharges[0][0] === 'UserEmail' ? 1 : 0;
+    const charges = allCharges.slice(startIndex);
+    
     const userCharges = charges.filter(charge => charge[0] === currentUser.email);
     
     if (chargeIndex >= userCharges.length) {
@@ -189,7 +270,9 @@ function processPayment(chargeIndex) {
     }
     
     const chargeToProcess = userCharges[chargeIndex];
-    const rowIndex = charges.findIndex(charge => 
+    
+    // Find index in the original array (including header offset)
+    const rowIndex = startIndex + allCharges.slice(startIndex).findIndex(charge => 
       charge[0] === chargeToProcess[0] && 
       charge[1] === chargeToProcess[1] && 
       charge[2] === chargeToProcess[2] && 
@@ -213,17 +296,34 @@ function processPayment(chargeIndex) {
         values: [paidCharge]
       }
     }).then(() => {
-      // 3. Remove from unpaid charges (actual row number is index + 1, and +1 for header row)
+      // 3. Get Sheet IDs
+      return gapi.client.sheets.spreadsheets.get({
+        spreadsheetId: SPREADSHEET_ID
+      });
+    }).then(spreadsheetData => {
+      // Find the sheet ID for unpaid charges
+      const sheets = spreadsheetData.result.sheets;
+      const unpaidSheet = sheets.find(sheet => 
+        sheet.properties.title === UNPAID_CHARGES_SHEET
+      );
+      
+      if (!unpaidSheet) {
+        throw new Error('Could not find the unpaid charges sheet');
+      }
+      
+      const unpaidSheetId = unpaidSheet.properties.sheetId;
+      
+      // 4. Remove from unpaid charges
       return gapi.client.sheets.spreadsheets.batchUpdate({
         spreadsheetId: SPREADSHEET_ID,
         resource: {
           requests: [{
             deleteDimension: {
               range: {
-                sheetId: getSheetId(UNPAID_CHARGES_SHEET),
+                sheetId: unpaidSheetId,
                 dimension: 'ROWS',
-                startIndex: rowIndex + 1, // +1 for header row
-                endIndex: rowIndex + 2
+                startIndex: rowIndex,
+                endIndex: rowIndex + 1
               }
             }
           }]
@@ -243,25 +343,12 @@ function processPayment(chargeIndex) {
   });
 }
 
-// Helper function to get sheet ID by name (you'll need to implement this)
-function getSheetId(sheetName) {
-  // In a real implementation, you would fetch the spreadsheet metadata
-  // and find the sheet ID by name
-  // For simplicity, you might hardcode these values
-  switch(sheetName) {
-    case USERS_SHEET: return 0; // Replace with actual sheet ID
-    case UNPAID_CHARGES_SHEET: return 1; // Replace with actual sheet ID
-    case PAID_CHARGES_SHEET: return 2; // Replace with actual sheet ID
-    default: return 0;
-  }
-}
+// Get sheet ID using API request (replaces the hardcoded function)
+// This is called in the processPayment function above
 
 // Admin function to add a charge (should only be callable by you)
 function adminAddCharge(userEmail, description, amount) {
-  // This function should be protected and only accessible to you
-  // In a GitHub Pages context, you'd need to implement proper authentication
-  // For now, we'll assume you have a separate admin page
-  
+  // This should be called from the admin interface
   const chargeData = [
     [userEmail, description, amount, new Date().toISOString()]
   ];
@@ -276,9 +363,15 @@ function adminAddCharge(userEmail, description, amount) {
     }
   }).then(response => {
     console.log('Charge added:', response);
-    document.getElementById('content').innerText = 'Charge added successfully!';
+    document.getElementById('adminContent').innerText = 'Charge added successfully!';
   }).catch(error => {
     console.error('Error adding charge:', error);
-    document.getElementById('content').innerText = 'Error adding charge: ' + error.message;
+    document.getElementById('adminContent').innerText = 'Error adding charge: ' + error.message;
   });
 }
+
+// Load API when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+  // Load the Google API
+  gapiLoaded();
+});
