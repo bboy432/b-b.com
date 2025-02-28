@@ -1,7 +1,7 @@
 // Google Sheets API client configuration
 const API_KEY = 'AIzaSyAP50YCu9tHfShHdE_BPfHL2Q0m3_bLcHI'; // You'll need to get this from Google Cloud Console
 const CLIENT_ID = '661685921875-ggjhqkpohipue560nnhhia4711d4aptf.apps.googleusercontent.com'; // You'll need to get this from Google Cloud Console
-const SPREADSHEET_ID = '2PACX-1vQCL2NDyE6IyfYKyA5FytCiDB4cXJsAQWHfFAfpSkTysNMJCmI_GKslDNC2ImBgzi1ovaRnwHzpSa1Z'; // Get this from your Google Sheet URL
+const SPREADSHEET_ID = '1P5liJkxzNqVBbrsaMdxT1MZ7Lk3j3ICL5J_M_mDdrVU'; // Get this from your Google Sheet URL
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
 // Sheet names/IDs for different data tables
