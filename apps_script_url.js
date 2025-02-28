@@ -1,0 +1,1 @@
+const webAppUrl = 'https://script.google.com/macros/s/AKfycbxd3VkNXVoyANJhV9-EWiTMOh4tFxaZuLVvm4uN2IZiKLaUJEh3WRePWYcUGWXBdMOC/exec'; // Replace with your Web App URL!

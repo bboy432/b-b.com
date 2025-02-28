@@ -1,0 +1,70 @@
+/* userpage_styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    width: 80%; /* Adjust container width as needed */
+    margin: auto;
+    overflow: hidden;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #5cb85c; /* Green heading color */
+    margin-top: 20px;
+}
+
+h2 {
+    color: #333; /* Darker heading for "Your Charges" */
+    margin-top: 30px;
+    border-bottom: 1px solid #ddd; /* Separator line */
+    padding-bottom: 5px;
+}
+
+h3 {
+    color: #5cb85c; /* Green for charge section titles */
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+#username-display {
+    color: #007bff; /* Example: Blue for username - customize as you like */
+}
+
+/* Charge Display Sections */
+#unpaid-charges-list,
+#past-charges-list {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style-type: none; /* Remove default bullet points */
+    padding-left: 0;
+}
+
+ul li {
+    padding: 8px 0;
+    border-bottom: 1px dotted #eee; /* Dotted line between list items */
+}
+
+ul li:last-child {
+    border-bottom: none; /* Remove border from the last item */
+}
+
+/* "Loading..." and "No charges" messages */
+#unpaid-charges-list li:first-child,
+#past-charges-list li:first-child {
+    color: #777; /* Gray color for loading/empty messages */
+}

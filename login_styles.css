@@ -1,0 +1,77 @@
+/* login_styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    min-height: 100vh; /* Ensure full viewport height */
+}
+
+.login-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px; /* Adjust width as needed */
+    text-align: center;
+}
+
+h1 {
+    text-align: center;
+    color: #5cb85c; /* Green color to match header */
+}
+
+label {
+    display: block; /* Make labels appear on their own line */
+    margin-bottom: 8px;
+    text-align: left; /* Align labels to the left */
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+button#login-button {
+    background-color: #5cb85c; /* Green button color */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+button#login-button:hover {
+    background-color: #4cae4c; /* Darker green on hover */
+}
+
+#login-message {
+    color: #d9534f; /* Red color for error messages */
+    margin-top: 15px;
+}
+
+p {
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+p a {
+    color: #5cb85c;
+    text-decoration: none;
+}
+
+p a:hover {
+    text-decoration: underline;
+}

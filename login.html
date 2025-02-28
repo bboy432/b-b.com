@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+    <script src="apps_script_url.js"></script>
+    <link rel="stylesheet" href="login_styles.css">
+</head>
+<body>
+    <div class="login-container">  <h1>Login</h1>
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" placeholder="Enter username">
+        <br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Enter password">
+        <br><br>
+        <button id="login-button">Login</button>
+
+        <div id="login-message"></div>
+        <p>Don't have an account? <a href="createaccount.html">Create Account</a></p>
+    </div> <script src="apps_script_url.js"></script>
+
+ 
+    <script>
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginButton = document.getElementById('login-button');
+        const loginMessageDiv = document.getElementById('login-message');
+
+        loginButton.addEventListener('click', () => {
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            if (username.trim() === "" || password.trim() === "") {
+                loginMessageDiv.textContent = "Username and password are required.";
+                return;
+            }
+
+            fetch(`${webAppUrl}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`)
+                .then(response => response.json())
+                .then(loginData => {
+                    if (loginData.success) {
+                        // Redirect to userpage.html on successful login
+                        window.location.href = 'userpage.html?username=' + encodeURIComponent(loginData.username);
+                    } else {
+                        loginMessageDiv.textContent = loginData.message; // Display login error message
+                    }
+                })
+                .catch(error => console.error('Login error:', error));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif; /* Choose a clean, readable font */
+    margin: 0; /* Reset default body margin */
+    padding: 0; /* Reset default body padding */
+    background-color: #f4f4f4; /* Light gray background */
+    color: #333; /* Dark gray text color */
+    line-height: 1.6; /* Improve text readability */
+}
+
+.container {
+    width: 80%; /* Adjust container width as needed */
+    margin: auto; /* Center the container horizontally */
+    overflow: hidden; /* Clear floats */
+    padding: 20px;
+}
+
+/* Header Section */
+header {
+    background: #5cb85c; /* Green header background */
+    color: white; /* White text in header */
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: 3px solid #333; /* Dark border below header */
+}
+
+header h1 {
+    margin: 0; /* Reset heading margin */
+    text-align: center; /* Center the main heading */
+    font-size: 2em; /* Adjust heading size */
+}
+
+/* Navigation (if you want to add navigation later) */
+nav {
+    background: #333; /* Dark background for navigation */
+    color: white; /* White text for navigation links */
+    padding: 10px 0; /* Vertical padding for navigation */
+    text-align: center; /* Center navigation links */
+}
+
+nav a {
+    color: white; /* White link color */
+    text-decoration: none; /* Remove underlines from links */
+    padding: 10px 15px; /* Spacing around navigation links */
+    display: inline-block; /* Make links display horizontally */
+}
+
+nav a:hover {
+    background: #5cb85c; /* Green background on hover */
+    color: white;
+}
+
+/* Main Content Area */
+#main {
+    padding: 20px;
+}
+
+#main h2 {
+    color: #5cb85c; /* Green color for section headings */
+}
+
+/* Image Styling (Example - adjust as needed when you have images) */
+.image-placeholder {
+    width: 100%; /* Make images responsive within their container */
+    max-width: 300px; /* Example max width for images - adjust */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Remove extra space below inline images */
+    margin: 10px auto; /* Center images and add margin */
+    border-radius: 5px; /* Optional: Rounded corners for images */
+    box-shadow: 2px 2px 5px #888888; /* Optional: Subtle shadow */
+}
+
+/* Footer Section */
+footer {
+    background: #333; /* Dark background for footer */
+    color: white; /* White text in footer */
+    text-align: center; /* Center footer text */
+    padding: 20px;
+    position: fixed; /* Keep footer at the bottom of the viewport */
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+    margin: 0; /* Reset paragraph margin in footer */
+}

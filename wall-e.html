@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Sheet Data</title>
+</head>
+<body>
+    <h1>Sheet Data</h1>
+    <div id="sheet-table-container">
+        </div>
+
+    <script>
+        // Replace with your Web App URL from Step 2
+        const webAppUrl = 'https://script.google.com/macros/s/AKfycbysgofFEulQFgfmrpljbMNwJMj3Js2_q41DEHNH9gMsT_j7C6TEVgC9BfFrJoWZJy_o/exec';
+
+        fetch(webAppUrl)
+            .then(response => response.text()) // Fetch as text (HTML table)
+            .then(htmlTable => {
+                document.getElementById('sheet-table-container').innerHTML = htmlTable;
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+/* createaccount_styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.create-account-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px; /* Adjust width as needed */
+    text-align: center;
+}
+
+h1 {
+    text-align: center;
+    color: #5cb85c; /* Green color to match header */
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    text-align: left;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+button#create-account-button {
+    background-color: #5cb85c;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+button#create-account-button:hover {
+    background-color: #4cae4c;
+}
+
+#create-account-message {
+    color: #d9534f; /* Red color for error messages */
+    margin-top: 15px;
+}
+
+p {
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+p a {
+    color: #5cb85c;
+    text-decoration: none;
+}
+
+p a:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Page</title>
+    <script src="apps_script_url.js"></script>
+    <link rel="stylesheet" href="userpage_styles.css">
+    <style>
+        ul {
+            list-style-type: none; /* Remove default bullet points */
+            padding-left: 0; /* Remove default padding */
+        }
+
+        ul li {
+            margin-bottom: 5px; /* Add some space between list items */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, <span id="username-display"></span>!</h1>
+        <h2>Your Charges</h2>
+
+        <div>
+            <h3>Unpaid Charges</h3>
+            <ul id="unpaid-charges-list">
+                <li>Loading unpaid charges...</li>  </ul>
+        </div>
+
+        <div>
+            <h3>Past Charges</h3>
+            <ul id="past-charges-list">
+                <li>Loading past charges...</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="apps_script_url.js"></script>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username');
+
+        const usernameDisplaySpan = document.getElementById('username-display');
+        const unpaidChargesListUl = document.getElementById('unpaid-charges-list');
+        const pastChargesListUl = document.getElementById('past-charges-list');
+
+        if (username) {
+            usernameDisplaySpan.textContent = username;
+
+            fetch(`${webAppUrl}?action=getuserdata&username=${encodeURIComponent(username)}`)
+                .then(response => response.json())
+                .then(userData => {
+                    if (userData.success) {
+                        // Display Unpaid Charges
+                        if (userData.unpaidCharges && userData.unpaidCharges.length > 0) {
+                            unpaidChargesListUl.innerHTML = ''; // Clear "Loading..." message
+                            userData.unpaidCharges.forEach(charge => {
+                                const listItem = document.createElement('li');
+                                listItem.textContent = charge; // Charge description is already formatted (e.g., "$22 mowing")
+                                unpaidChargesListUl.appendChild(listItem);
+                            });
+                        } else {
+                            unpaidChargesListUl.innerHTML = '<li>No unpaid charges.</li>';
+                        }
+
+                        // Display Past Charges
+                        if (userData.pastCharges && userData.pastCharges.length > 0) {
+                            pastChargesListUl.innerHTML = ''; // Clear "Loading..." message
+                            userData.pastCharges.forEach(charge => {
+                                const listItem = document.createElement('li');
+                                listItem.textContent = charge; // Past charge description is assumed to be already formatted
+                                pastChargesListUl.appendChild(listItem);
+                            });
+                        } else {
+                            pastChargesListUl.innerHTML = '<li>No past charges.</li>';
+                        }
+
+
+                    } else {
+                        unpaidChargesListUl.innerHTML = '<li>Error loading unpaid charges.</li>';
+                        pastChargesListUl.innerHTML = `<li>${userData.message || 'Error loading past charges.'}</li>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                    unpaidChargesListUl.innerHTML = '<li>Error loading unpaid charges.</li>';
+                    pastChargesListUl.innerHTML = '<li>Error loading past charges.</li>';
+                });
+
+        } else {
+            usernameDisplaySpan.textContent = "User";
+            unpaidChargesListUl.innerHTML = '<li>Username not found.</li>';
+            pastChargesListUl.innerHTML = '<li>Username not found.</li>';
+        }
+    </script>
+</body>
+</html>

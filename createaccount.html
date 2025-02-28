@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Account</title>
+    <link rel="stylesheet" href="createaccount_styles.css">
+    <script src="apps_script_url.js"></script>
+</head>
+<body>
+    <div class="create-account-container">
+        <h1>Create Account</h1>
+
+        <label for="new-username">New Username:</label>
+        <input type="text" id="new-username" placeholder="Enter new username">
+        <br><br>
+        <label for="new-password">New Password:</label>
+        <input type="password" id="new-password" placeholder="Enter new password">
+        <br><br>
+        <button id="create-account-button">Create Account</button>
+
+        <div id="create-account-message"></div>
+        <p><a href="login.html">Back to Login Page</a></p>
+    </div>
+    <script>
+        const newUsernameInput = document.getElementById('new-username');
+        const newPasswordInput = document.getElementById('new-password');
+        const createAccountButton = document.getElementById('create-account-button');
+        const createAccountMessageDiv = document.getElementById('create-account-message');
+
+        createAccountButton.addEventListener('click', () => {
+            const newUsername = newUsernameInput.value;
+            const newPassword = newPasswordInput.value;
+
+            if (newUsername.trim() === "" || newPassword.trim() === "") {
+                createAccountMessageDiv.textContent = "Username and password are required.";
+                return;
+            }
+
+            fetch(`${webAppUrl}?action=createaccount&new_username=${encodeURIComponent(newUsername)}&new_password=${encodeURIComponent(newPassword)}`)
+                .then(response => response.json())
+                .then(creationData => {
+                    const createAccountContainer = document.querySelector('.create-account-container'); // Get the container
+
+                    if (creationData.success) {
+                        // Account creation successful - replace container content
+                        createAccountContainer.innerHTML = `
+                            <h2>Account Created Successfully!</h2>
+                            <p>Your account has been created. Please proceed to the <a href="login.html">Login Page</a>.</p>
+                        `;
+                    } else {
+                        // Account creation failed - display error message as before
+                        createAccountMessageDiv.textContent = creationData.message;
+                    }
+                })
+                .catch(error => console.error('Account creation error:', error));
+        });
+    </script>
+</body>
+</html>
