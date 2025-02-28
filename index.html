@@ -27,7 +27,8 @@
     }
     input[type="text"],
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="number"] {
       width: 100%;
       padding: 8px;
       border: 1px solid #ddd;
@@ -75,6 +76,14 @@
     .tab-content.active {
       display: block;
     }
+    .admin-section {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+    }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -83,8 +92,8 @@
     
     <!-- Auth buttons -->
     <div>
-      <button id="authorize_button" style="display: none;">Sign In</button>
-      <button id="signout_button" style="display: none;">Sign Out</button>
+      <button id="authorize_button">Sign In</button>
+      <button id="signout_button">Sign Out</button>
     </div>
     
     <!-- Tabs -->
@@ -93,6 +102,7 @@
         <div class="tab active" onclick="showTab('login')">Login</div>
         <div class="tab" onclick="showTab('register')">Register</div>
         <div class="tab" onclick="showTab('dashboard')">Dashboard</div>
+        <div class="tab" id="admin-tab" style="display: none;" onclick="showTab('admin')">Admin</div>
       </div>
       
       <!-- Login Form -->
@@ -133,9 +143,41 @@
         <div id="userInfo"></div>
         <div id="charges"></div>
       </div>
+      
+      <!-- Admin Panel -->
+      <div id="admin" class="tab-content">
+        <h2>Admin Panel</h2>
+        <p>Add a charge to a user account.</p>
+        
+        <div class="form-group">
+          <label for="chargeEmail">User Email:</label>
+          <input type="email" id="chargeEmail" placeholder="User's email address">
+        </div>
+        <div class="form-group">
+          <label for="chargeDescription">Description:</label>
+          <input type="text" id="chargeDescription" placeholder="Charge description">
+        </div>
+        <div class="form-group">
+          <label for="chargeAmount">Amount:</label>
+          <input type="number" id="chargeAmount" placeholder="Amount" step="0.01">
+        </div>
+        <button onclick="handleAddCharge()">Add Charge</button>
+        
+        <div id="adminContent"></div>
+      </div>
     </div>
     
     <div id="content"></div>
+    
+    <!-- Admin Access Section -->
+    <div class="admin-section hidden" id="adminAccess">
+      <h3>Admin Access</h3>
+      <p>Enter admin password to access admin tools:</p>
+      <div class="form-group">
+        <input type="password" id="adminPassword" placeholder="Admin password">
+        <button onclick="checkAdminPassword()">Access Admin</button>
+      </div>
+    </div>
   </div>
   
   <!-- Google API Script -->
@@ -145,6 +187,11 @@
   <script src="app.js"></script>
   
   <script>
+    // Admin password - change this to your secure password
+    // In a real app, this would be handled server-side
+    // This is a simple client-side implementation for GitHub Pages
+    const ADMIN_PASSWORD = "yourSecurePassword123";
+    
     // Simple page navigation
     function showTab(tabId) {
       // Hide all tabs
@@ -171,6 +218,10 @@
       }
       
       loginUser(email, password);
+      
+      // Show admin access for the site owner
+      // In a real app, you would have proper admin permissions
+      document.getElementById('adminAccess').classList.remove('hidden');
     }
     
     // Handle registration form submission
@@ -187,13 +238,33 @@
       createAccount(username, email, password);
     }
     
-    // Initialize the application
-    document.addEventListener('DOMContentLoaded', function() {
-      // Load the Google API
-      gapi.load('client:auth2', function() {
-        initClient();
-      });
-    });
+    // Handle admin charge submission
+    function handleAddCharge() {
+      const email = document.getElementById('chargeEmail').value;
+      const description = document.getElementById('chargeDescription').value;
+      const amount = document.getElementById('chargeAmount').value;
+      
+      if (!email || !description || !amount) {
+        alert('Please fill in all fields.');
+        return;
+      }
+      
+      adminAddCharge(email, description, amount);
+    }
+    
+    // Check admin password
+    function checkAdminPassword() {
+      const password = document.getElementById('adminPassword').value;
+      
+      if (password === ADMIN_PASSWORD) {
+        // Show admin tab
+        document.getElementById('admin-tab').style.display = 'block';
+        showTab('admin');
+        document.getElementById('adminAccess').classList.add('hidden');
+      } else {
+        alert('Incorrect admin password.');
+      }
+    }
   </script>
 </body>
 </html>
